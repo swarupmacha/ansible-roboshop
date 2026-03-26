@@ -6,7 +6,7 @@
     ami_id: ami-0220d79f3f480ecf5
     sg_id: sg-089e67667eb98e2e5
     Envi: Dev
-    domain_name: swarupmacha.online
+    domain_name: "swarupmacha.online."
     instance:
       - mongodb
       - catalogue
