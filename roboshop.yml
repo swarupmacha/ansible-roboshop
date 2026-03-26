@@ -1,0 +1,29 @@
+---
+- name: "Create EC2 Instance and ROute 53 records"
+  hosts: all
+  connection: local
+  vars:
+    ami_id: ami-0220d79f3f480ecf5
+    sg_id: sg-089e67667eb98e2e5
+    Envi: Dev
+    instance:
+      - mongodb
+      - catalogue
+  tasks:
+  - name: "Creating EC2 Instance"
+    amazon.aws.ec2_instance:
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+      instance_type: t3.micro
+      name: "{{ item }} - {{ Envi }}"
+      tags:
+        Project: roboshop
+        Component: "{{ item }}"
+        Enviroment: "{{ Envi }}"
+        Name: "{{ item }} - {{ Envi }}"
+    loop: "{{ instance }}"
+    register: ec2_output
+  
+  - name: printing the ec2_output
+    debug:
+      msg: "{{ ec2_output }}"
