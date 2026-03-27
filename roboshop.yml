@@ -6,6 +6,7 @@
     ami_id: ami-0220d79f3f480ecf5
     sg_id: sg-089e67667eb98e2e5
     Envi: Dev
+    action: create
     domain_name: "swarupmacha.online."
     instance:
       - mongodb
@@ -24,10 +25,12 @@
         Name: "{{ item }} - {{ Envi }}"
     loop: "{{ instance }}"
     register: ec2_output
+    when action == "create"
   
   - name: printing the ec2_output
     debug:
       msg: "{{ ec2_output }}"
+    when action == "create"
   
   - name: "Creating Route53 Records"
     amazon.aws.route53:
@@ -39,6 +42,7 @@
       value: "{{ item.instances[0].private_ip_address }}"
       wait: true
     loop: "{{ ec2_output.results }}"
+    when action == "create"
   
   - name: "Creating Route53 Records"
     amazon.aws.route53:
@@ -50,6 +54,27 @@
       value: "{{ item.instances[0].public_ip_address }}"
       wait: true
     loop: "{{ ec2_output.results }}"
-    when: item.item == "frontend"
+    when: 
+    - item.item == "frontend"
+    - when action == "create"
+  
+  - name: "Deleting Route53 Records"
+    amazon.aws.route53:
+      state: absent
+      zone: "{{ domain_name }}"
+      record: "{{ item }}-{{ Envi }}.{{ domain_name }}"
+      type: A
+    loop: "{{ instance }}"
+    when action == "delete"
+
+  - name: "Deleting EC2 Instance"
+    amazon.aws.ec2_instance:
+      state: absent
+      name: "{{ item.item }} - {{ Envi }}"
+    loop: "{{ instance }}"
+    when action == "delete"
+
+  
+    
 
   
