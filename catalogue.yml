@@ -51,4 +51,8 @@
   - name: printin the output 
     debug:
       msg: "{{  catalogue_output }}"
+
+  - name: "Loading the catalogue schema"
+    shell: "mongosh --host "{{ MONGODB_HOST }}"  </app/db/master-data.js"
+    when: catalogue_output.stdout < 0
   
