@@ -1,6 +1,6 @@
 ---
 - name: "configuration catalogue instance"
-  hosts: catalogue-dev.swarupmacha.online
+  hosts: catalogue
   become: yes
   tasks:
   - name:

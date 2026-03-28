@@ -1,6 +1,6 @@
 --- 
 - name: "installing user service"
-  hosts: user-dev.swarupmacha.online
+  hosts: user
   become: yes
   tasks:
   - name: "enabling nodejs 20"

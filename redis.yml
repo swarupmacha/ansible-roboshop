@@ -1,6 +1,6 @@
 ---
 - name: "installing redis"
-  hosts: redis-dev.swarupmacha.online
+  hosts: redis
   become: yes
   tasks:
   - name: "enable redis "

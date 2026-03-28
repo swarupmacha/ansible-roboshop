@@ -1,0 +1,56 @@
+---
+- name: "configuration of frontend instance"
+  hosts: frontend
+  become: yes
+  tasks:
+  - name: "enabling nginx"
+    command: "dnf module enable nginx:1.24 -y"
+  
+  - name: "installing nginx"
+    dnf:
+      name: nginx
+      state: present
+  
+  - name: " starting nginx"
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+  
+  - name: "removing default nginx content"
+    file:
+      path: /usr/share/nginx/html
+      state: absent
+  
+  - name: "creating html directory"
+    file:
+      path: /usr/share/nginx/html 
+      state: directory
+
+
+  - name: "downloading frontend code"
+    get_url:
+      url: "https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip"
+      dest: /tmp/frontend.zip
+  
+  - name: "Extracting the code"
+    unarchive:
+      src: /tmp/frontend.zip
+      dest: /usr/share/nginx/html
+      remote_src: yes
+
+  - name: "removinf default nginx config"
+    file:
+      path: /etc/nginx/nginx.conf
+      state: absent
+  
+  - name: "copying frontend.conf file"
+    template:
+      src: nginx.conf
+      dest: /etc/nginx/nginx.conf
+
+  - name: "starting nginx"
+    service:
+      name: nginx
+      state: restarted
+      enabled: yes

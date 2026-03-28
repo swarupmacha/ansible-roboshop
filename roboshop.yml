@@ -14,6 +14,11 @@
       - redis
       - user
       - cart
+      - mysql
+      - shipping
+      - rabbitmq
+      - payment
+      - frontend
   tasks:
   - name: "Creating EC2 Instance"
     amazon.aws.ec2_instance:

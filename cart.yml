@@ -1,6 +1,6 @@
 ---
 - name: "Configuartion Cart service"
-  hosts: cart-dev.swarupmacha.online
+  hosts: cart
   become: yes
   tasks:
   - name: "enabling nodejs 20"

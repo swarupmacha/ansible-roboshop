@@ -1,0 +1,65 @@
+---
+- name: "Configuration of payment instnace"
+  hosts: payment-dev.swarupmacha.online
+  become: yes
+  tasks:
+  - name: "installing python"
+    dnf: 
+      name: {{ item }}
+      state: present
+      loop:
+        - python3
+        - gcc
+        - python3-devel
+  
+  - name: "create user roboshop"
+    user:
+      name: roboshop
+      system: true
+      home: /app
+      shell: /sbin/nologin
+      comment: "roboshop user"
+
+  - name: "Deleting the existing app directory"
+    file:
+      path: /app
+      state: absent
+
+  - name: "creating app directory"
+    file:
+      path: /app
+      state: directory
+  
+  - name: "dowloaning payment code"
+    get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
+      dest: /tmp/payment.zip
+  
+  - name: "Extracting the code"
+    unarchive:
+      src: /tmp/payment.zip
+      dest: /app
+      remote_src: yes
+  
+  - name: "installing dependencies"
+    pip:
+      requirements: requirements.txt
+      executable: pip3.9
+      args:
+        chdir: /app
+  
+  - name: "copying payment.service file"
+    template:
+      src: payment.service
+      dest: /etc/systemd/system/payment.service
+
+  - name: "daemon reload"
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+
+  - name: "starting payment service"
+    service:
+      name: payment
+      state: restarted
+      enabled: yes
+      
