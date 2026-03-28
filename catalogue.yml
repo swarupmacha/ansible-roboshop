@@ -67,7 +67,7 @@
       msg: "{{  catalogue_output }}"
 
   - name: "Loading the catalogue schema"
-    shell: "mongosh --host "{{ MONGODB_HOST }}"  </app/db/master-data.js"
+    shell: 'mongosh --host {{ MONGODB_HOST }}  < /app/db/master-data.js'
     when: catalogue_output.stdout | int < 0
 
   - name: "staring the catalogue service"
@@ -75,4 +75,3 @@
       name: catalogue
       state: restarted
       enabled: yes
-  
