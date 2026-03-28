@@ -11,6 +11,9 @@
     instance:
       - mongodb
       - catalogue
+      - redis
+      - user
+      - cart
   tasks:
   - name: "Creating EC2 Instance"
     amazon.aws.ec2_instance:
