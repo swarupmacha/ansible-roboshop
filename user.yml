@@ -1,53 +1,57 @@
 --- 
-- name: "enabling nodejs 20"
-  command: "dnf module enable nodejs:20 -y"
+- name: "installing user service"
+  hosts: user-dev.swarupmacha.online
+  become: yes
+  tasks:
+  - name: "enabling nodejs 20"
+    command: "dnf module enable nodejs:20 -y"
 
-- name: "istalling nodejs"
-  dnf:
-    name: nodejs
-    state: present
+  - name: "istalling nodejs"
+    dnf:
+      name: nodejs
+      state: present
 
-- name: create system user roboshop
-  user:
-    name: roboshop
-    system: true
-    home: /app
-    shell: /sbin/nologin
-    comment: "roboshop user"
+  - name: create system user roboshop
+    user:
+      name: roboshop
+      system: true
+      home: /app
+      shell: /sbin/nologin
+      comment: "roboshop user"
 
-- name: "Deleting the existing app directory"
-  file:
-    path: /app
-    state: absent
+  - name: "Deleting the existing app directory"
+    file:
+      path: /app
+      state: absent
 
-- name: "creating app directory"
-  file:
-    path: /app
-    state: directory
+  - name: "creating app directory"
+    file:
+      path: /app
+      state: directory
 
-- name: "dowloaning user code"
-  get_url:
-    url: "https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip"
-    dest: /tmp/user.zip
-  
-- name: "Extracting the code"
-  unarchive:
-    src: /tmp/user.zip
-    dest: /app
-    remote_src: yes
+  - name: "dowloaning user code"
+    get_url:
+      url: "https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip"
+      dest: /tmp/user.zip
+    
+  - name: "Extracting the code"
+    unarchive:
+      src: /tmp/user.zip
+      dest: /app
+      remote_src: yes
 
-- name: "installing npm dependencies"
-  community.general.npm:
-    path: /app
+  - name: "installing npm dependencies"
+    community.general.npm:
+      path: /app
 
-- name: "copying user.service file"
-  template:
-    src: user.service
-    dest: /etc/systemd/system/user.service
+  - name: "copying user.service file"
+    template:
+      src: user.service
+      dest: /etc/systemd/system/user.service
 
-- name: "starting user service"
-  service: 
-    name: user
-    state: restarted
-    enabled: yes
-  
+  - name: "starting user service"
+    service: 
+      name: user
+      state: restarted
+      enabled: yes
+    

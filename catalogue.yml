@@ -1,6 +1,6 @@
 ---
 - name: "configuration catalogue instance"
-  hosts: catalogue.swarupmacha.online
+  hosts: catalogue-dev.swarupmacha.online
   become: yes
   tasks:
   - name:
@@ -43,6 +43,7 @@
     unarchive:
       src: /tmp/catalogue.zip
       dest: /app
+      remote_src: yes
 
   - name: "Installing npm dependencies"
     community.general.npm:
@@ -50,8 +51,8 @@
 
   - name: "copying catalogue.service file"
     copy:
-      src: mongo.repo
-      dest: /etc/yum.repos.d/mongo.repo
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
   
   - name: install mongodb client
     yum:
