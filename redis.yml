@@ -1,0 +1,32 @@
+---
+- name: "installing redis"
+  hosts: redis-dev.swarupmacha.online
+  become: yes
+  tasks:
+  - name: "enable redis "
+    command: "dnf module enable redis:7 -y"
+
+  - name: "Installing redis"
+    yum:
+      name: redis
+      state: present
+
+  - name: "replacing the bind address"
+    replace:
+      path: /etc/redis/redis.conf
+      regexp: '127.0.0.1'
+      replace: '0.0.0.0'
+
+  - name: "replacing protected mode"
+    lineinfile:
+      path: /etc/redis/redis.conf
+      regexp: '^protected-mode yes$'
+      line: 'protected-mode no'
+
+  - name: "staring the redis"
+    service: 
+      name: redis
+      state: restarted
+      enabled: yes
+  
+  
