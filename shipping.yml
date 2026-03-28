@@ -51,7 +51,7 @@
       chdir: /app
 
   - name: "copying shipping.service file"
-    temeplate:
+    template:
       src: shipping.service
       dest: /etc/systemd/system/shipping.service
 
