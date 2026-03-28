@@ -41,8 +41,8 @@
     path: /app
 
 - name: "copying user.service file"
-  copy:
-    src: user.repo
+  template:
+    src: user.service
     dest: /etc/systemd/system/user.service
 
 - name: "starting user service"
