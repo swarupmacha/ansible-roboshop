@@ -20,12 +20,6 @@
       enabled: yes
 
   - name: "create rabbimq user"
-    community.general.rabbitmq_user:
-      user: roboshop
-      password: roboshop123
-      permissions: 
-        - vhost: /
-          configure_priv: .*
-          write_priv: .*
-          read_priv: .*
-      state: present
+    shell: |
+      rabbitmqctl add_user roboshop roboshop123 || true
+      rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
