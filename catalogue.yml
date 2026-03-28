@@ -53,6 +53,11 @@
     copy:
       src: catalogue.service
       dest: /etc/systemd/system/catalogue.service
+
+  - name: "copying mongodb repo file"
+    copy:
+      src: mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
   
   - name: install mongodb client
     dnf:
