@@ -5,10 +5,12 @@
   tasks:
   - name:
     command: "dnf module enable nodejs:20 -y"
+
   - name: "Installing nodejs"
     yum:
       name: nodejs
       state: present
+
   - name: create system user roboshop
     user:
       name: roboshop
@@ -16,10 +18,22 @@
       home: /app
       shell: /sbin/nologin
       comment: "roboshop user"
+
+  - name: "Deleting the esisting application content"
+    file:
+      path: /app
+      state: absent
+
   - name: "Creating application directory"
     file:
       path: /app
       state: directory
+
+  - name: "delete catalogue service file if exist"
+    file:
+      path:  /tmp/catalogue.zip
+      state: absent
+
   - name: "Downloading catalogue code"
     get_url:
       url: "https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip"
@@ -55,4 +69,10 @@
   - name: "Loading the catalogue schema"
     shell: "mongosh --host "{{ MONGODB_HOST }}"  </app/db/master-data.js"
     when: catalogue_output.stdout | int < 0
+
+  - name: "staring the catalogue service"
+    service:
+      name: catalogue
+      state: restarted
+      enabled: yes
   
