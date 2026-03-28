@@ -55,7 +55,7 @@
       dest: /etc/systemd/system/catalogue.service
   
   - name: install mongodb client
-    yum:
+    dnf:
       name: mongodb-mongosh
       state: present
   
