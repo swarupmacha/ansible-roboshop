@@ -1,16 +1,16 @@
 ---
 - name: "Configuration of payment instnace"
-  hosts: payment-dev.swarupmacha.online
+  hosts: payment
   become: yes
   tasks:
   - name: "installing python"
     dnf: 
-      name: {{ item }}
+      name: "{{ item }}""
       state: present
-      loop:
-        - python3
-        - gcc
-        - python3-devel
+    loop:
+      - python3
+      - gcc
+      - python3-devel
   
   - name: "create user roboshop"
     user:
